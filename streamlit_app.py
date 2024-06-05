@@ -2,12 +2,6 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 
-# Fixing TensorFlow ImportError
-try:
-    import tensorflow as tf
-except ModuleNotFoundError:
-    st.error("TensorFlow is not properly installed. Please ensure it's installed in your environment.")
-    st.stop()
 
 # Load the trained model
 @st.cache(allow_output_mutation=True)

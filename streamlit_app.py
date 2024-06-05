@@ -1,10 +1,6 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
-
-# Install OpenCV
-st.system("pip install opencv-python-headless")
 
 # Load the trained model
 @st.cache(allow_output_mutation=True)

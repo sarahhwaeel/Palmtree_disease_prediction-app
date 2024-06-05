@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 
-from keras.preprocessing import image
+
 import cv2
 from os import listdir
 

@@ -20,6 +20,4 @@ pip install streamlit
 # Commented out IPython magic to ensure Python compatibility.
 # %%writefile app.py
 
-! wget -q -O - ipv4.icanhazip.com
 
-! streamlit run app.py & npx localtunnel --port 8501

@@ -12,7 +12,8 @@ from google.colab import drive
 drive.mount('/content/drive')
 
 # Install required packages
-!pip install streamlit localtunnel numpy pandas tensorflow keras matplotlib seaborn
+pip install streamlit localtunnel numpy pandas tensorflow keras matplotlib seaborn
+
 
 pip install streamlit
 

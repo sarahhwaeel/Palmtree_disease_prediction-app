@@ -2,12 +2,21 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 import tensorflow as tf
+import requests
+from io import BytesIO
+
+# Function to download the model file from the URL
+def download_model(model_url):
+    response = requests.get(model_url)
+    response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+    return BytesIO(response.content)
 
 # Load the trained model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model_path = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"  
-    return tf.keras.models.load_model(model_path)
+    model_url = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"
+    model_file = download_model(model_url)
+    return tf.keras.models.load_model(model_file)
 
 # Preprocess the uploaded image
 def preprocess_image(img):

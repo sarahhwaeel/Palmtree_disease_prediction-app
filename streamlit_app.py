@@ -6,7 +6,7 @@ import tensorflow as tf
 # Load the trained model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model_path = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/tag/v1.0.0/palmtree_disease_model.h5"
+    model_path = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/v1.0.0/palmtree_disease_model.h5"
 
     return tf.keras.models.load_model(model_path)
 

@@ -5,6 +5,32 @@ import tensorflow as tf
 import requests
 from io import BytesIO
 
+
+
+@st.cache(allow_output_mutation=True)
+def load_model():
+    try:
+        model_path = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"
+        model = tf.keras.models.load_model(model_path)
+        return model
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+
+# Main app
+def main():
+    st.title("Palm Tree Disease Prediction Application")
+
+    # Load model
+    model = load_model()
+
+    if model is not None:
+        st.success("Model loaded successfully!")
+    else:
+        st.error("Failed to load model. Please check the model file path and permissions.")
+
+
+
+
 # Function to download the model file from the URL
 def download_model(model_url):
     response = requests.get(model_url)

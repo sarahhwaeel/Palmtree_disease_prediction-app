@@ -4,9 +4,9 @@ from PIL import Image
 import tensorflow as tf
 
 # Load the trained model
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_model():
-    model_path = "palmtree_disease_model.h5"  # Update this path as needed
+    model_path = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"  
     return tf.keras.models.load_model(model_path)
 
 # Preprocess the uploaded image

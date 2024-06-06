@@ -2,47 +2,12 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 import tensorflow as tf
-import requests
-from io import BytesIO
-
-
-
-@st.cache(allow_output_mutation=True)
-def load_model():
-    try:
-        model_path = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"
-        model = tf.keras.models.load_model(model_path)
-        return model
-    except Exception as e:
-        st.error(f"Error loading model: {e}")
-
-# Main app
-def main():
-    st.title("Palm Tree Disease Prediction Application")
-
-    # Load model
-    model = load_model()
-
-    if model is not None:
-        st.success("Model loaded successfully!")
-    else:
-        st.error("Failed to load model. Please check the model file path and permissions.")
-
-
-
-
-# Function to download the model file from the URL
-def download_model(model_url):
-    response = requests.get(model_url)
-    response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
-    return BytesIO(response.content)
 
 # Load the trained model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model_url = "https://drive.google.com/uc?id=183hiluvIbiUNEJh8aZR3yL1DKT1KCT3l"
-    model_file = download_model(model_url)
-    return tf.keras.models.load_model(model_file)
+    model_path = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
+    return tf.keras.models.load_model(model_path)
 
 # Preprocess the uploaded image
 def preprocess_image(img):

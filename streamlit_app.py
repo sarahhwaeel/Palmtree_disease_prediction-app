@@ -1,16 +1,20 @@
 import streamlit as st
+import requests
+import io
+import tensorflow as tf
 import numpy as np
 from PIL import Image
-import tensorflow as tf
 
-# Load the trained model
+# Function to load model from GitHub URL
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model_path = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/v1.0.0/palmtree_disease_model.h5"
+    model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/v1.0.0/palmtree_disease_model.h5"
+    response = requests.get(model_url)
+    model_file = io.BytesIO(response.content)
+    model = tf.keras.models.load_model(model_file)
+    return model
 
-    return tf.keras.models.load_model(model_path)
-
-# Preprocess the uploaded image
+# Function to preprocess the uploaded image
 def preprocess_image(img):
     img = img.resize((256, 256))
     img_array = np.array(img) / 255.0  # Normalize pixel values
@@ -20,6 +24,9 @@ def preprocess_image(img):
 # Main app
 def main():
     st.title("Palm Tree Disease Prediction Application")
+
+    # Load model
+    model = load_model()
 
     # Upload image
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -32,8 +39,7 @@ def main():
         # Preprocess the image
         img_array = preprocess_image(img)
 
-        # Load model and make prediction
-        model = load_model()
+        # Make prediction
         predictions = model.predict(img_array)
         class_labels = ['brown spots', 'healthy', 'white scale']
         predicted_class = class_labels[np.argmax(predictions)]

@@ -16,17 +16,24 @@ def load_model():
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
-    # Check the image format
-    print("Image format:", image.format)
+    # Create a copy of the image to avoid modifying the original
+    img_copy = image.copy()
     
     # Convert to RGB if the image is in grayscale mode
-    if image.mode != "RGB":
-        image = image.convert("RGB")
+    if img_copy.mode != "RGB":
+        img_copy = img_copy.convert("RGB")
     
-    img = image.resize((256, 256))
-    img_array = np.array(img) / 255.0  # Normalize pixel values
+    # Resize the image
+    img_resized = img_copy.resize((256, 256))
+    
+    # Convert the resized image to numpy array and normalize
+    img_array = np.array(img_resized) / 255.0
+    
+    # Add a batch dimension
     img_array = np.expand_dims(img_array, axis=0)
+    
     return img_array
+
 
 
 # Main app

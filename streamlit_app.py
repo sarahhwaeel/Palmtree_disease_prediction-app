@@ -5,6 +5,7 @@ from PIL import Image as pil_image
 import urllib.request
 import os
 import io
+import torch
 
 # Function to download and load model from URL or local file
 @st.cache(allow_output_mutation=True)
@@ -16,8 +17,8 @@ def load_model():
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
-def preprocess_image(img):
-    img = img.resize((256, 256))
+def preprocess_image(image):
+    img = image.resize((256, 256))
     img_array = np.array(img) / 255.0  # Normalize pixel values
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
@@ -43,8 +44,12 @@ def main():
             # Preprocess the image
             img_array = preprocess_image(img)
 
-            # Make prediction
-            predictions = model.predict(img_array)
+            # Convert to PyTorch tensor
+            img_tensor = torch.from_numpy(img_array).type(torch.FloatTensor)
+
+            # Make prediction (example placeholder)
+            # Replace this with your actual PyTorch model prediction logic
+            predictions = model.predict(img_tensor)
             class_labels = ['brown spots', 'healthy', 'white scale']
             predicted_class = class_labels[np.argmax(predictions)]
 

@@ -49,7 +49,6 @@ def main():
 
             # Preprocess the image
             img_array = preprocess_image(img)
-
             # Make prediction
             predictions = model.predict(img_array)
             class_labels = ['brown spots', 'healthy', 'white scale']

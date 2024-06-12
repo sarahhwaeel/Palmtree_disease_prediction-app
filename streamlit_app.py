@@ -1,12 +1,13 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
-from PIL import Image
+from PIL import Image as pil_image
 import urllib.request
 import os
+import io
 
 # Function to download and load model from URL or local file
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
     model_path = "palmtree_disease_model.h5"
@@ -33,8 +34,9 @@ def main():
 
     if uploaded_file is not None:
         try:
-            # Display uploaded image
-            img = Image.open(uploaded_file)
+            # Read image as bytes using BytesIO
+            img_bytes = uploaded_file.read()
+            img = pil_image.open(io.BytesIO(img_bytes))
             img = img.convert('RGB')  # Ensure image is in RGB mode
             st.image(img, caption="Uploaded Image", width=300)
 

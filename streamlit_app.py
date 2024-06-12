@@ -4,6 +4,11 @@ import numpy as np
 from PIL import Image
 import urllib.request
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Function to download and load model from URL or local file
 @st.cache_resource
@@ -11,7 +16,9 @@ def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
     model_path = "palmtree_disease_model.h5"
     if not os.path.exists(model_path):
+        logger.debug("Downloading model...")
         urllib.request.urlretrieve(model_url, model_path)
+        logger.debug("Model downloaded.")
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
@@ -41,8 +48,13 @@ def main():
             # Preprocess the image
             img_array = preprocess_image(img)
 
+            # Log image details
+            logger.debug(f"Image shape after preprocessing: {img_array.shape}")
+
             # Make prediction
             predictions = model.predict(img_array)
+            logger.debug(f"Model predictions: {predictions}")
+
             class_labels = ['brown spots', 'healthy', 'white scale']
             predicted_class = class_labels[np.argmax(predictions)]
 
@@ -59,6 +71,7 @@ def main():
 
             st.markdown(f"**<h3 style='font-size:24px'>Pesticide suggested: {pesticide_info}</h3>**", unsafe_allow_html=True)
         except Exception as e:
+            logger.error(f"Error processing image: {e}")
             st.error(f"Error processing image: {e}")
 
 if __name__ == "__main__":

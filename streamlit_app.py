@@ -15,11 +15,19 @@ def load_model():
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
-def preprocess_image(img):
-    img = img.resize((256, 256))
+def preprocess_image(image):
+    # Check the image format
+    print("Image format:", image.format)
+    
+    # Convert to RGB if the image is in grayscale mode
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+    
+    img = image.resize((256, 256))
     img_array = np.array(img) / 255.0  # Normalize pixel values
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
+
 
 # Main app
 def main():

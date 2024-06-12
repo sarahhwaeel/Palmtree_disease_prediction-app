@@ -3,10 +3,11 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import urllib.request
+import os
 import cv2
 
 # Function to download and load model from URL or local file
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
     model_path = "palmtree_disease_model.h5"
@@ -15,7 +16,6 @@ def load_model():
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
-
 def preprocess_image(image):
     # Convert image to numpy array
     img_array = np.array(image)
@@ -30,7 +30,6 @@ def preprocess_image(image):
     img_array = np.expand_dims(img_array, axis=0)
     
     return img_array
-
 
 # Main app
 def main():
@@ -68,13 +67,9 @@ def main():
                 pesticide_info = "Use Chemical insecticides as buprofezin or pyriproxyfen."
 
             st.markdown(f"**<h3 style='font-size:24px'>Pesticide suggested: {pesticide_info}</h3>**", unsafe_allow_html=True)
+        
         except Exception as e:
             st.error(f"Error processing image: {e}")
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

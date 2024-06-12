@@ -3,7 +3,6 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import urllib.request
-import os
 import cv2
 
 # Function to download and load model from URL or local file

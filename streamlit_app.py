@@ -3,30 +3,22 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import urllib.request
+import os
 
 # Function to download and load model from URL or local file
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
     model_path = "palmtree_disease_model.h5"
-    if not st.file_exists(model_path):
+    if not os.path.exists(model_path):
         urllib.request.urlretrieve(model_url, model_path)
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
-def preprocess_image(image):
-    # Convert image to numpy array
-    img_array = np.array(image)
-
-    # Resize the image using PIL (Pillow)
-    img_resized = np.array(Image.fromarray(img_array).resize((256, 256)))
-
-    # Normalize pixel values
-    img_array = img_resized / 255.0
-    
-    # Add a batch dimension
+def preprocess_image(img):
+    img = img.resize((256, 256))
+    img_array = np.array(img) / 255.0  # Normalize pixel values
     img_array = np.expand_dims(img_array, axis=0)
-    
     return img_array
 
 # Main app
@@ -42,7 +34,8 @@ def main():
     if uploaded_file is not None:
         try:
             # Display uploaded image
-            img = Image.open(uploaded_file).convert('RGB')
+            img = Image.open(uploaded_file)
+            img = img.convert('RGB')  # Ensure image is in RGB mode
             st.image(img, caption="Uploaded Image", width=300)
 
             # Preprocess the image
@@ -65,7 +58,6 @@ def main():
                 pesticide_info = "Use Chemical insecticides as buprofezin or pyriproxyfen."
 
             st.markdown(f"**<h3 style='font-size:24px'>Pesticide suggested: {pesticide_info}</h3>**", unsafe_allow_html=True)
-        
         except Exception as e:
             st.error(f"Error processing image: {e}")
 

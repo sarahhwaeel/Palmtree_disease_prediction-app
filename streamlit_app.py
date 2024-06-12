@@ -5,7 +5,7 @@ from PIL import Image
 import urllib.request
 import os
 
-# Function to load model from URL or local file
+# Function to download and load model from URL or local file
 @st.cache_resource
 def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
@@ -35,6 +35,7 @@ def main():
         try:
             # Display uploaded image
             img = Image.open(uploaded_file)
+            img = img.convert('RGB')  # Ensure image is in RGB mode
             st.image(img, caption="Uploaded Image", width=300)
 
             # Preprocess the image

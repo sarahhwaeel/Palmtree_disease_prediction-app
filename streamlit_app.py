@@ -3,14 +3,13 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import urllib.request
-import cv2
 
 # Function to download and load model from URL or local file
 @st.cache(allow_output_mutation=True)
 def load_model():
     model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
     model_path = "palmtree_disease_model.h5"
-    if not os.path.exists(model_path):
+    if not st.file_exists(model_path):
         urllib.request.urlretrieve(model_url, model_path)
     return tf.keras.models.load_model(model_path)
 
@@ -19,8 +18,8 @@ def preprocess_image(image):
     # Convert image to numpy array
     img_array = np.array(image)
 
-    # Resize the image
-    img_resized = cv2.resize(img_array, (256, 256))
+    # Resize the image using PIL (Pillow)
+    img_resized = np.array(Image.fromarray(img_array).resize((256, 256)))
 
     # Normalize pixel values
     img_array = img_resized / 255.0
@@ -48,6 +47,7 @@ def main():
 
             # Preprocess the image
             img_array = preprocess_image(img)
+
             # Make prediction
             predictions = model.predict(img_array)
             class_labels = ['brown spots', 'healthy', 'white scale']

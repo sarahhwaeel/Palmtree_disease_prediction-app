@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import urllib.request
-import os
+import cv2
 
 # Function to download and load model from URL or local file
 @st.cache_resource
@@ -15,25 +15,21 @@ def load_model():
     return tf.keras.models.load_model(model_path)
 
 # Function to preprocess the uploaded image
+
 def preprocess_image(image):
-    # Create a copy of the image to avoid modifying the original
-    img_copy = image.copy()
-    
-    # Convert to RGB if the image is in grayscale mode
-    if img_copy.mode != "RGB":
-        img_copy = img_copy.convert("RGB")
-    
+    # Convert image to numpy array
+    img_array = np.array(image)
+
     # Resize the image
-    img_resized = img_copy.resize((256, 256))
-    
-    # Convert the resized image to numpy array and normalize
-    img_array = np.array(img_resized) / 255.0
+    img_resized = cv2.resize(img_array, (256, 256))
+
+    # Normalize pixel values
+    img_array = img_resized / 255.0
     
     # Add a batch dimension
     img_array = np.expand_dims(img_array, axis=0)
     
     return img_array
-
 
 
 # Main app

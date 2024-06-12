@@ -42,7 +42,9 @@ def main():
         try:
             # Display uploaded image
             img = Image.open(uploaded_file)
+            logger.debug(f"Original image mode: {img.mode}")
             img = img.convert('RGB')  # Ensure image is in RGB mode
+            logger.debug(f"Converted image mode: {img.mode}")
             st.image(img, caption="Uploaded Image", width=300)
 
             # Preprocess the image

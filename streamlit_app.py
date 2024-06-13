@@ -17,8 +17,10 @@ def load_model():
 
 # Function to preprocess the uploaded image (with fix)
 def preprocess_image(image):
+  print(f"Image mode before grayscale: {image.mode}")
   # Convert image to grayscale
   img_gray = image.convert('L')
+  print(f"Image mode after grayscale: {img_gray.mode}")
   
   # Resize the image (example resizing to 256x256)
   img_resized = img_gray.resize((256, 256))
@@ -28,11 +30,13 @@ def preprocess_image(image):
   
   # Convert back to RGB for Streamlit display
   img_rgb = img_array.reshape((img_array.shape[0], img_array.shape[1], 3))  # Add a channel for RGB
+  print(f"Image mode after RGB conversion: {img_rgb.shape}")
   
   # Add a batch dimension
   img_array = np.expand_dims(img_rgb, axis=0)
   
   return img_array
+
 
 # Function to predict disease class and suggest pesticide
 def predict_disease_and_pesticide(model, img_array):

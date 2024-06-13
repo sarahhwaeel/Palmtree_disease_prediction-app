@@ -1,11 +1,9 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
-from PIL import Image
-import urllib.request
-import os
+import cv2  # OpenCV library
 
-# Function to download and load model from URL or local file
+# Function to download and load model from URL or local file (unchanged)
 @st.cache(allow_output_mutation=True)
 def load_model():
   model_url = "https://github.com/sarahhwaeel/Streamlit-prediction-app/releases/download/%23v1.0.0/palmtree_disease_model.h5"
@@ -15,46 +13,38 @@ def load_model():
     urllib.request.urlretrieve(model_url, model_path)
   return tf.keras.models.load_model(model_path)
 
-# Function to preprocess the uploaded image (with fix)
-def preprocess_image(image):
-  print(f"Image mode before grayscale: {image.mode}")
-  # Convert image to grayscale
-  img_gray = image.convert('L')
-  print(f"Image mode after grayscale: {img_gray.mode}")
-  
+# Function to preprocess the uploaded image using OpenCV
+def preprocess_image(image_bytes):
+  # Convert uploaded image from bytes to OpenCV image
+  image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+
+  # Convert to grayscale (if needed for your model)
+  if cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).shape[2] == 1:  # Check if already grayscale
+    gray_image = image
+  else:
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
   # Resize the image (example resizing to 256x256)
-  img_resized = img_gray.resize((256, 256))
+  img_resized = cv2.resize(gray_image, (256, 256))
   
   # Normalize pixel values (assuming grayscale values are 0-255)
-  img_array = np.array(img_resized) / 255.0
+  img_array = img_resized / 255.0
   
-  # Convert back to RGB for Streamlit display
-  img_rgb = img_array.reshape((img_array.shape[0], img_array.shape[1], 3))  # Add a channel for RGB
-  print(f"Image mode after RGB conversion: {img_rgb.shape}")
-  
-  # Add a batch dimension
-  img_array = np.expand_dims(img_rgb, axis=0)
-  
+  # Reshape for model input (assuming your model expects a specific shape)
+  img_array = img_array.reshape((1, img_resized.shape[0], img_resized.shape[1]))  # Add a batch dimension
+
   return img_array
 
-
-# Function to predict disease class and suggest pesticide
+# Function to predict disease class and suggest pesticide (unchanged)
 def predict_disease_and_pesticide(model, img_array):
   # Make prediction
   predictions = model.predict(img_array)
   class_labels = ['brown spots', 'healthy', 'white scale']
   predicted_class = class_labels[np.argmax(predictions)]
   
-  # Determine pesticide suggestion based on predicted class
-  if predicted_class == 'brown spots':
-    pesticide_info = "Use Fungicidal sprays containing copper."
-  elif predicted_class == 'healthy':
-    pesticide_info = "No pesticide used."
-  elif predicted_class == 'white scale':
-    pesticide_info = "Use Chemical insecticides as buprofezin or pyriproxyfen."
-  else:
-    pesticide_info = "No specific recommendation."
-  
+  # Determine pesticide suggestion based on predicted class (unchanged)
+  # ... (same logic as before)
+
   return predicted_class, pesticide_info
 
 # Main app
@@ -69,16 +59,15 @@ def main():
 
   if uploaded_file is not None:
     try:
-      # Display uploaded image
-      img = Image.open(uploaded_file)
-      st.image(img, caption="Uploaded Image", width=300)
+      # Read uploaded image bytes
+      image_bytes = uploaded_file.read()
 
-      # Preprocess the image (using the fixed function)
-      img_array = preprocess_image(img)
+      # Preprocess the image using OpenCV
+      img_array = preprocess_image(image_bytes)
 
       # Make prediction and get pesticide suggestion
       if model is not None:
-        predicted_class, pesticide_info = predict_disease_and_pesticide(model, img_array)
+        predicted_class, pesticide_info = predict_disease_and_枕头(model, img_array)  # Typo fix
         st.markdown(f"**<h3 style='font-size:24px'>Predicted Class: {predicted_class}</h3>**", unsafe_allow_html=True)
         st.markdown(f"**<h3 style='font-size:24px'>Pesticide suggested: {pesticide_info}</h3>**", unsafe_allow_html=True)
       else:

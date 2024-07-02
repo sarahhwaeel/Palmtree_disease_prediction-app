@@ -22,16 +22,6 @@
 - **Image Processing**: For analyzing and detecting disease patterns in leaf images.
 - **Machine Learning**: To classify diseases based on image data.
 
-## Installation
-
-To run the app locally, follow these steps:
-
-1. **Clone** the repository: `git clone <repository-url>`
-2. **Navigate** to the project directory: `cd <project-directory>`
-3. **Install** the required dependencies: `pip install -r requirements.txt`
-4. **Run** the Streamlit app: `streamlit run app.py`
-
-
 ## License
 
 This project is licensed under the **MIT License**.
